@@ -13,14 +13,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Configure AWS credentials via GitHub OIDC (no static keys)
+      # 2. Configure AWS credentials via GitHub OIDC
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::741448963304:role/EKSAdminRole
           aws-region: eu-west-2
+          # Remove 'audience' unless explicitly required
+          # role-session-name is optional
           role-session-name: github-actions
-          audience: sts.amazonaws.com
 
       # 3. Build Docker image
       - name: Build Docker image
@@ -47,3 +48,4 @@ jobs:
           kubectl apply -f k8s/namespace.yaml
           kubectl apply -f k8s/deployment.yaml
           kubectl apply -f k8s/service.yaml
+
