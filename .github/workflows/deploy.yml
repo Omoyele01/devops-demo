@@ -36,7 +36,7 @@ jobs:
       - name: Build Docker image
         run: docker build -t omoyele/devops-demo:latest .
 
-      # 6) Push Docker image
+      # 6) Push Docker imag
       - name: Push Docker image
         run: docker push omoyele/devops-demo:latest
 
