@@ -19,7 +19,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-2   # must be set explicitly
+          aws-region: eu-west-2
 
       # 3) Set up Docker Buildx (optional but recommended)
       - name: Set up Docker Buildx
@@ -41,12 +41,21 @@ jobs:
         run: docker push omoyele/devops-demo:latest
 
       # 7) Update kubeconfig for EKS
-      - name: Update kubeconfig
-        run: aws eks update-kubeconfig --name devops-demo-eks --region eu-west-2
+      - name: Update kubeconfig for EKS
+        env:                                # << UPDATED: explicitly set KUBECONFIG
+          KUBECONFIG: ${{ github.workspace }}/kubeconfig
+        run: |
+          aws eks update-kubeconfig \
+            --name devops-demo-eks \
+            --region eu-west-2 \
+            --kubeconfig $KUBECONFIG
 
       # 8) Deploy to Kubernetes
       - name: Deploy to Kubernetes
+        env:                                # << UPDATED: ensure kubectl uses the same KUBECONFIG
+          KUBECONFIG: ${{ github.workspace }}/kubeconfig
         run: |
           kubectl apply -f k8s/namespace.yaml --validate=false
           kubectl apply -f k8s/deployment.yaml --validate=false
           kubectl apply -f k8s/service.yaml --validate=false
+
