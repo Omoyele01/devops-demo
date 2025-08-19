@@ -13,13 +13,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2) Configure AWS using IAM user keys (Yele)
+      # 2) Configure AWS using IAM user keys
       - name: Configure AWS credentials (IAM user)
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: eu-west-2   # must be set explicitly
 
       # 3) Set up Docker Buildx (optional but recommended)
       - name: Set up Docker Buildx
@@ -42,7 +42,7 @@ jobs:
 
       # 7) Update kubeconfig for EKS
       - name: Update kubeconfig
-        run: aws eks update-kubeconfig --name devops-demo-eks --region ${{ secrets.AWS_REGION }}
+        run: aws eks update-kubeconfig --name devops-demo-eks --region eu-west-2
 
       # 8) Deploy to Kubernetes
       - name: Deploy to Kubernetes
