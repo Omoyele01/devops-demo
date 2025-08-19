@@ -42,7 +42,7 @@ jobs:
       - name: Update kubeconfig
         run: aws eks update-kubeconfig --name devops-demo-eks --region eu-west-2
 
-      # 7. Deploy to Kubernetes
+      # 7. Deploy to Kubernete
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -f k8s/namespace.yaml
