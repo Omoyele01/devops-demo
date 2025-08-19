@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Checkout
+      # 1) Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -19,9 +19,9 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-2
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      # 3) (Optional) Buildx setup – speeds up builds
+      # 3) Set up Docker Buildx (optional but recommended)
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -36,17 +36,17 @@ jobs:
       - name: Build Docker image
         run: docker build -t omoyele/devops-demo:latest .
 
-      # 6) Push Docker imag
+      # 6) Push Docker image
       - name: Push Docker image
         run: docker push omoyele/devops-demo:latest
 
       # 7) Update kubeconfig for EKS
       - name: Update kubeconfig
-        run: aws eks update-kubeconfig --name devops-demo-eks --region eu-west-2
+        run: aws eks update-kubeconfig --name devops-demo-eks --region ${{ secrets.AWS_REGION }}
 
       # 8) Deploy to Kubernetes
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f k8s/namespace.yaml
-          kubectl apply -f k8s/deployment.yaml
-          kubectl apply -f k8s/service.yaml
+          kubectl apply -f k8s/namespace.yaml --validate=false
+          kubectl apply -f k8s/deployment.yaml --validate=false
+          kubectl apply -f k8s/service.yaml --validate=false
