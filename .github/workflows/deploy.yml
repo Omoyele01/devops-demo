@@ -48,7 +48,7 @@ jobs:
             --region eu-west-2 \
             --kubeconfig ${{ github.workspace }}/kubeconfig
 
-      # 8) Deploy to Kubernetes
+      # 8) Deploy to Kubernete
       - name: Deploy to Kubernetes
         env:
           KUBECONFIG: ${{ github.workspace }}/kubeconfig
